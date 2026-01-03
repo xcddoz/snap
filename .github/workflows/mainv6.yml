@@ -1,0 +1,52 @@
+name: GITHUB STARTER
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main, master ]
+  schedule:
+    - cron: '0 */6 * * *'
+
+concurrency:
+  group: arc-runner
+  cancel-in-progress: true
+
+jobs:
+  define-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      ids: ${{ steps.set-ids.outputs.ids }}
+    steps:
+      - name: Check Repo Type
+        id: set-ids
+        run: |
+          IS_FORK="${{ github.event.repository.fork }}"
+          if [[ "$IS_FORK" == "true" ]]; then
+            echo "ids=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]" >> $GITHUB_OUTPUT
+          else
+            echo "ids=[1,2,3,4,5]" >> $GITHUB_OUTPUT
+          fi
+
+  run-script:
+    needs: define-matrix
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    
+    strategy:
+      matrix:
+        id: ${{ fromJson(needs.define-matrix.outputs.ids) }}
+      fail-fast: false
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.3'
+
+      - name: Install dependencies
+        run: pip install requests aioquic uvloop
+
+      - name: Run Python Script
+        run: python3 arc-x86_64.py
