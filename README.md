@@ -35,7 +35,7 @@
 
 ## 🚀 Tentang
 
-**[NAMA-MODULE-ANDA]** adalah Snap module custom yang dirancang untuk menggantikan atau menjadi alternatif modern dari `apt` (Advanced Package Tool) dalam mengelola unduhan paket di lingkungan VPS.
+**SNAP CUSTOM TUNING** adalah Snap module custom yang dirancang untuk menggantikan atau menjadi alternatif modern dari `apt` (Advanced Package Tool) dalam mengelola unduhan paket di lingkungan VPS.
 
 Dibangun untuk mengatasi masalah dependensi yang sering terjadi pada `apt`, module ini menawarkan isolasi paket yang lebih baik, kecepatan unduh yang dioptimalkan, dan manajemen library yang tidak mengganggu sistem operasi inti VPS Anda. Solusi sempurna untuk SysAdmin dan Developer yang membutuhkan lingkungan VPS yang bersih dan stabil.
 
